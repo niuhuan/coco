@@ -1,6 +1,6 @@
 # COCO
 
-A illustrations and wallpaper client.
+A illustrations and wallpapers client.
 
 ## Screen Shoots
 
