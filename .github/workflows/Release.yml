@@ -311,6 +311,6 @@ jobs:
       - name: Upload Asset (All)
         if: steps.check_asset.outputs.skip_build != 'true'
         run: |
-          cd coco/ci
+          cd main/ci
           cargo run --bin upload-asset
 
