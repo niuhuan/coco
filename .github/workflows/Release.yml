@@ -5,7 +5,7 @@ on:
 
 env:
   flutter_channel: 'stable'
-  flutter_version: '3.0.2'
+  flutter_version: '3.0.0'
   GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
 jobs:
