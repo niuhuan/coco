@@ -1,2 +1,2 @@
-- Add resources
-- Add proxy interface
+- Delete downloads
+- Refresh downloads
