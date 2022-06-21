@@ -112,19 +112,10 @@ jobs:
           token: ${{ secrets.GH_TOKEN }}
           path: 'coco'
 
-      - name: Check bridge
-        if: steps.check_asset.outputs.skip_build != 'true'
-        uses: actions/checkout@v3
-        with:
-          repository: 'fzyzcjy/flutter_rust_bridge'
-          path: 'flutter_rust_bridge'
-
       - name: Install flutter_rust_bridge
         if: steps.check_asset.outputs.skip_build != 'true'
         run: |
-          cd flutter_rust_bridge/frb_codegen
-          cargo install --path . --force
-          cd ../..
+          cargo install flutter_rust_bridge_codegen --force
 
       - name: Cache Flutter dependencies (Linux/Android)
         if: steps.check_asset.outputs.skip_build != 'true' && ( matrix.config.target == 'android-arm32' || matrix.config.target == 'android-arm64' || matrix.config.target == 'android-x86_64' || matrix.config.target == 'linux' )
