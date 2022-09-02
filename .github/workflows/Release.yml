@@ -112,17 +112,51 @@ jobs:
           token: ${{ secrets.GH_TOKEN }}
           path: 'coco'
 
-      - name: Install flutter_rust_bridge
-        if: steps.check_asset.outputs.skip_build != 'true'
-        run: |
-          cargo install flutter_rust_bridge_codegen --force
-
-      - name: Cache Flutter dependencies (Linux/Android)
+      - name: Cache Flutter dependencies (Linux host)
         if: steps.check_asset.outputs.skip_build != 'true' && ( matrix.config.target == 'android-arm32' || matrix.config.target == 'android-arm64' || matrix.config.target == 'android-x86_64' || matrix.config.target == 'linux' )
         uses: actions/cache@v3
         with:
           path: /opt/hostedtoolcache/flutter
           key: ${{ runner.os }}-flutter
+
+      - name: Cache Flutter dependencies (Linux host)
+        if: steps.check_asset.outputs.skip_build != 'true' && ( matrix.config.target == 'ios' || matrix.config.target == 'macos' )
+        uses: actions/cache@v3
+        with:
+          path: /Users/runner/hostedtoolcache/flutter
+          key: ${{ runner.os }}-flutter
+
+      - name: Cache Flutter dependencies (Linux host)
+        if: steps.check_asset.outputs.skip_build != 'true' && ( matrix.config.target == 'android-arm32' || matrix.config.target == 'android-arm64' || matrix.config.target == 'android-x86_64' || matrix.config.target == 'linux' )
+        uses: actions/cache@v3
+        with:
+          path: /opt/hostedtoolcache/flutter
+          key: ${{ runner.os }}-flutter
+
+      - name: Gradle caching (android)
+        if: steps.check_asset.outputs.skip_build != 'true' && ( matrix.config.target == 'android-arm32' || matrix.config.target == 'android-arm64' || matrix.config.target == 'android-x86_64' )
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Install and chache linux dependencies (linux)
+        if: steps.check_asset.outputs.skip_build != 'true' && matrix.config.target == 'linux'
+        uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          packages: ninja-build liblzma-dev libgtk-3-dev libgl1-mesa-dev xorg-dev libclang-dev
+          version: 1.0
+
+      - name: Install and chache LLVM + Clang (android)
+        if: steps.check_asset.outputs.skip_build != 'true' && ( matrix.config.target == 'android-arm32' || matrix.config.target == 'android-arm64' || matrix.config.target == 'android-x86_64' )
+        uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          packages: libclang-dev
+          version: 1.0
 
       - name: Setup flutter
         if: steps.check_asset.outputs.skip_build != 'true'
@@ -131,11 +165,10 @@ jobs:
           channel: ${{ env.flutter_channel }}
           flutter-version: ${{ env.flutter_version }}
 
-      - name: Install LLVM and Clang (Linux/Android)
-        if: steps.check_asset.outputs.skip_build != 'true' && ( matrix.config.target == 'android-arm32' || matrix.config.target == 'android-arm64' || matrix.config.target == 'android-x86_64' || matrix.config.target == 'linux' )
+      - name: Install flutter_rust_bridge
+        if: steps.check_asset.outputs.skip_build != 'true'
         run: |
-          sudo apt update
-          sudo apt install -y libclang-dev
+          cargo install flutter_rust_bridge_codegen --force
 
       - name: Install cargo tools (non-android)
         if: steps.check_asset.outputs.skip_build != 'true' && ( matrix.config.target == 'macos' || matrix.config.target == 'windows' || matrix.config.target == 'linux' )
@@ -175,6 +208,7 @@ jobs:
         run: |
           rustup target install aarch64-apple-ios
           cd coco
+          flutter pub get
           echo > lib/bridge_generated.dart
           echo > ios/Runner/bridge_generated.h
           echo > native/src/bridge_generated.rs
@@ -202,6 +236,7 @@ jobs:
           export ANDROID_NDK_HOME=$ANDROID_HOME/ndk/22.1.7171670
           rustup target install aarch64-linux-android
           cd coco
+          flutter pub get
           echo > native/src/bridge_generated.rs
           flutter_rust_bridge_codegen --rust-input native/src/api.rs --dart-output lib/bridge_generated.dart
           cd native
@@ -215,6 +250,7 @@ jobs:
           export ANDROID_NDK_HOME=$ANDROID_HOME/ndk/22.1.7171670
           rustup target install armv7-linux-androideabi
           cd coco
+          flutter pub get
           echo > native/src/bridge_generated.rs
           flutter_rust_bridge_codegen --rust-input native/src/api.rs --dart-output lib/bridge_generated.dart
           cd native
@@ -228,6 +264,7 @@ jobs:
           export ANDROID_NDK_HOME=$ANDROID_HOME/ndk/22.1.7171670
           rustup target install x86_64-linux-android
           cd coco
+          flutter pub get
           echo > native/src/bridge_generated.rs
           flutter_rust_bridge_codegen --rust-input native/src/api.rs --dart-output lib/bridge_generated.dart
           cd native
@@ -235,19 +272,20 @@ jobs:
           cd ..
           flutter build apk --target-platform android-x64
 
-      - name: Install dependencies and build (Linux)
+      - name: Build (Linux)
         if: steps.check_asset.outputs.skip_build != 'true' && matrix.config.target == 'linux'
         env:
           ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
         run: |
-          cd coco
+
           curl -JOL https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
           chmod a+x appimagetool-x86_64.AppImage
           mkdir -p ${GITHUB_WORKSPACE}/bin
           mv appimagetool-x86_64.AppImage ${GITHUB_WORKSPACE}/bin/appimagetool
           echo ::add-path::${GITHUB_WORKSPACE}/bin
-          sudo apt-get update
-          sudo apt-get install -y libgl1-mesa-dev xorg-dev
+
+          cd coco
+          flutter pub get
           flutter config --enable-linux-desktop
           flutter build linux --release
           mv build/linux/x64/release/bundle/{jasmine,AppRun}
@@ -259,6 +297,7 @@ jobs:
         if: steps.check_asset.outputs.skip_build != 'true' && matrix.config.target == 'windows'
         run: |
           cd coco
+          flutter pub get
           echo $null > native/src/bridge_generated.rs
           flutter_rust_bridge_codegen --rust-crate-dir native --rust-input native/src/api.rs --dart-output lib/bridge_generated.dart --class-name Native
           flutter config --enable-windows-desktop
@@ -271,6 +310,7 @@ jobs:
         if: steps.check_asset.outputs.skip_build != 'true' && matrix.config.target == 'macos'
         run: |
           cd coco
+          flutter pub get
           echo > native/src/bridge_generated.rs
           flutter_rust_bridge_codegen \
               --rust-input native/src/api.rs \
