@@ -1,2 +1,4 @@
-- Delete downloads
-- Refresh downloads
+- feat: Mouse right click pop
+- feat: Exit confirm
+- feat: Upgrade flutter to 3.3.0
+- fix: Columns number

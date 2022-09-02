@@ -32,7 +32,7 @@ async fn main() -> Result<()> {
         "macos" => "../../coco/build/macos.dmg",
         "ios" => "../../coco/build/nosign.ipa",
         "windows" => "../../coco/build/windows.zip",
-        "linux" => "../../coco/build/linux.zip",
+        "linux" => "../../coco/build/linux.AppImage",
         "android-arm32" => "../../coco/build/app/outputs/flutter-apk/app-release.apk",
         "android-arm64" => "../../coco/build/app/outputs/flutter-apk/app-release.apk",
         "android-x86_64" => "../../coco/build/app/outputs/flutter-apk/app-release.apk",
