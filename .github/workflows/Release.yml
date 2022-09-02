@@ -119,18 +119,11 @@ jobs:
           path: /opt/hostedtoolcache/flutter
           key: ${{ runner.os }}-flutter
 
-      - name: Cache Flutter dependencies (Linux host)
+      - name: Cache Flutter dependencies (Mac host)
         if: steps.check_asset.outputs.skip_build != 'true' && ( matrix.config.target == 'ios' || matrix.config.target == 'macos' )
         uses: actions/cache@v3
         with:
           path: /Users/runner/hostedtoolcache/flutter
-          key: ${{ runner.os }}-flutter
-
-      - name: Cache Flutter dependencies (Linux host)
-        if: steps.check_asset.outputs.skip_build != 'true' && ( matrix.config.target == 'android-arm32' || matrix.config.target == 'android-arm64' || matrix.config.target == 'android-x86_64' || matrix.config.target == 'linux' )
-        uses: actions/cache@v3
-        with:
-          path: /opt/hostedtoolcache/flutter
           key: ${{ runner.os }}-flutter
 
       - name: Gradle caching (android)
@@ -286,9 +279,12 @@ jobs:
 
           cd coco
           flutter pub get
+          echo > native/src/bridge_generated.rs
+          flutter_rust_bridge_codegen --rust-crate-dir native --rust-input native/src/api.rs --dart-output lib/bridge_generated.dart --class-name Native
+          
           flutter config --enable-linux-desktop
           flutter build linux --release
-          mv build/linux/x64/release/bundle/{jasmine,AppRun}
+          mv build/linux/x64/release/bundle/{coco,AppRun}
           cp linux/appimage/* build/linux/x64/release/bundle/
           ./appimagetool build/linux/x64/release/bundle/
           mv *.AppImage build/linux.AppImage
