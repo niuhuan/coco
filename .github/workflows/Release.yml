@@ -7,6 +7,9 @@ env:
   flutter_channel: 'stable'
   flutter_version: '3.3.6'
   GH_TOKEN: ${{ secrets.GH_TOKEN }}
+  RUST_TOOLCHAIN: nightly-2023-03-13
+  NDK_VERSION: 25.2.9519653
+  LLVM_VERSION: '10.0'
 
 jobs:
 
@@ -36,7 +39,7 @@ jobs:
       - name: Install rust toolchain
         uses: actions-rs/toolchain@v1
         with:
-          toolchain: stable
+          toolchain: ${{ env.RUST_TOOLCHAIN }}
 
       - name: Checkout
         uses: actions/checkout@v3
@@ -96,7 +99,7 @@ jobs:
       - name: Install rust toolchain
         uses: actions-rs/toolchain@v1
         with:
-          toolchain: stable
+          toolchain: ${{ env.RUST_TOOLCHAIN }}
 
       - id: check_asset
         name: Check asset
@@ -186,9 +189,9 @@ jobs:
         with:
           packages: |
             platform-tools
-            platforms;android-32
-            build-tools;30.0.2
-            ndk;22.1.7171670
+            platforms;android-33
+            build-tools;33.0.0
+            ndk;${{ env.NDK_VERSION }}
 
       - name: Set-Version (All)
         if: steps.check_asset.outputs.skip_build != 'true'
