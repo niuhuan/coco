@@ -5,7 +5,7 @@ on:
 
 env:
   flutter_channel: 'stable'
-  flutter_version: '3.3.6'
+  flutter_version: '3.7.3'
   GH_TOKEN: ${{ secrets.GH_TOKEN }}
   RUST_TOOLCHAIN: nightly-2023-03-13
   NDK_VERSION: 25.2.9519653
@@ -229,7 +229,7 @@ jobs:
       - name: Install rust target and build (Android-arm64)
         if: steps.check_asset.outputs.skip_build != 'true' && ( matrix.config.target == 'android-arm64')
         run: |
-          export ANDROID_NDK_HOME=$ANDROID_HOME/ndk/22.1.7171670
+          export ANDROID_NDK_HOME=$ANDROID_HOME/ndk/${{ env.NDK_VERSION }}
           rustup target install aarch64-linux-android
           cd coco
           flutter pub get
@@ -243,7 +243,7 @@ jobs:
       - name: Install rust target and build (Android-arm32)
         if: steps.check_asset.outputs.skip_build != 'true' && ( matrix.config.target == 'android-arm32')
         run: |
-          export ANDROID_NDK_HOME=$ANDROID_HOME/ndk/22.1.7171670
+          export ANDROID_NDK_HOME=$ANDROID_HOME/ndk/${{ env.NDK_VERSION }}
           rustup target install armv7-linux-androideabi
           cd coco
           flutter pub get
@@ -257,7 +257,7 @@ jobs:
       - name: Install rust target and build (Android-x86_64)
         if: steps.check_asset.outputs.skip_build != 'true' && ( matrix.config.target == 'android-x86_64')
         run: |
-          export ANDROID_NDK_HOME=$ANDROID_HOME/ndk/22.1.7171670
+          export ANDROID_NDK_HOME=$ANDROID_HOME/ndk/${{ env.NDK_VERSION }}
           rustup target install x86_64-linux-android
           cd coco
           flutter pub get
