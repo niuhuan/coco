@@ -276,9 +276,7 @@ jobs:
 
           curl -JOL https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
           chmod a+x appimagetool-x86_64.AppImage
-          mkdir -p ${GITHUB_WORKSPACE}/bin
-          mv appimagetool-x86_64.AppImage ${GITHUB_WORKSPACE}/bin/appimagetool
-          echo ::add-path::${GITHUB_WORKSPACE}/bin
+          mv appimagetool-x86_64.AppImage appimagetool
 
           cd coco
           flutter pub get
@@ -289,7 +287,7 @@ jobs:
           flutter build linux --release
           mv build/linux/x64/release/bundle/{coco,AppRun}
           cp linux/appimage/* build/linux/x64/release/bundle/
-          appimagetool build/linux/x64/release/bundle/
+          ../appimagetool build/linux/x64/release/bundle/
           mv *.AppImage build/linux.AppImage
 
       - name: build (windows)
