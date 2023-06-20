@@ -164,7 +164,7 @@ jobs:
       - name: Install flutter_rust_bridge
         if: steps.check_asset.outputs.skip_build != 'true'
         run: |
-          cargo install flutter_rust_bridge_codegen --force
+          cargo install flutter_rust_bridge_codegen --force --version 1.54.0
 
       - name: Install cargo tools (non-android)
         if: steps.check_asset.outputs.skip_build != 'true' && ( matrix.config.target == 'macos' || matrix.config.target == 'windows' || matrix.config.target == 'linux' )
