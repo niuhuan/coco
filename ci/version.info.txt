@@ -1,1 +1,5 @@
+v0.0.7
+- ✨Display picture tags
+
+v0.0.6
 - ♻️Downloads to file browser
