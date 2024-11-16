@@ -1,0 +1,38 @@
+[package]
+name = "native"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+crate-type = ["cdylib", "staticlib"]
+
+[dependencies]
+anyhow = "1.0"
+async_once = "0.2"
+base64 = "0.13"
+bytes = "1.1"
+chrono = "0.4.22"
+flutter_rust_bridge = "=1.54.1"
+hex = "0.4"
+image = { version = "0", features = ["jpeg", "gif", "webp", "bmp", "png", "jpeg_rayon"] }
+itertools = "0.10.3"
+lazy_static = "1"
+md5 = "0.7"
+once_cell = "1"
+prost = "0.11"
+prost-types = "0.11"
+regex = "1.5.5"
+reqwest = { version = "0.11", features = ["tokio-rustls", "rustls", "rustls-tls", "socks"], default-features = false }
+rsa = "0.7"
+rust-crypto = "0"
+sea-orm = { version = "0.10.1", features = ["sqlx-sqlite", "runtime-tokio-rustls", "macros"], default-features = false }
+serde = "1.0"
+serde_derive = "1.0"
+serde_json = "1.0"
+serde_path_to_error = "0.1.7"
+tokio = { version = "1", features = ["full"] }
+
+[target.'cfg(any(target_os = "windows", target_os = "linux" , target_os = "macos"))'.dependencies]
+directories = { version = "5.0" }

@@ -1,0 +1,39 @@
+name: coco
+description: A image gallery client.
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.16.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.17.0
+
+  cupertino_icons: ^1.0.2
+  flutter_rust_bridge: 1.54.1
+  url_launcher: ^6.0.20
+  flutter_styled_toast: ^2.0.0
+  waterfall_flow: ^3.0.2
+  photo_view: ^0.13.0
+  decorated_icon: ^1.2.1
+  modal_bottom_sheet: ^3.0.0-pre
+  event: ^2.1.2
+  share_plus: ^4.0.9
+  ffi: ^2.0.1
+  # file_picker: 5.2.11
+  permission_handler: ^10.2.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^1.0.0
+  ffigen: 7.2.11
+
+flutter:
+  generate: true
+  uses-material-design: true
+  assets:
+    - lib/assets/
